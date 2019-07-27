@@ -45,6 +45,40 @@ class App extends React.Component {
     }
   }
 
+  fetchWeatherByCity = (city) => {
+    fetch(`http://api.openweathermap.org/data/2.5/weather?units=imperial&q=${city}&APPID=4798d2ba65a57a46587bfbd4af561989`)
+    .then(response => response.json())
+    .then(weatherData => {
+      console.log(weatherData.name)
+      this.setState({
+        lat: weatherData.coord.lat,
+        long: weatherData.coord.lon,
+        city: weatherData.name,
+        temp: weatherData.main.temp,
+        pressure: weatherData.main.pressure,
+        humidity: weatherData.main.humidity,
+        desc: weatherData.weather[0].main
+      })
+    })
+  }
+
+  fetchWeatherByCoords = (lat, long) => {
+    fetch(`http://api.openweathermap.org/data/2.5/weather?units=imperial&lat=${parseFloat(lat)}&lon=${parseFloat(long)}&APPID=4798d2ba65a57a46587bfbd4af561989`)
+    .then(response => response.json())
+    .then(weatherData => {
+      console.log(weatherData.name)
+      this.setState({
+        lat: weatherData.coord.lat,
+        long: weatherData.coord.lon,
+        city: weatherData.name,
+        temp: weatherData.main.temp,
+        pressure: weatherData.main.pressure,
+        humidity: weatherData.main.humidity,
+        desc: weatherData.weather[0].main
+      })
+    })
+  }
+
   componentDidMount() {
     this.getCurrentLocation();
   }
@@ -56,7 +90,10 @@ class App extends React.Component {
           <h1>MyWeather</h1>
         </header>
         <br />
-        <SearchArea />
+        Search for your city:
+        <br />
+        <br />
+        <SearchArea fetchWeatherByCity={this.fetchWeatherByCity} fetchWeatherByCoords={this.fetchWeatherByCoords}/>
         <div>
           <h3>{this.state.city}</h3>
           <h4>{this.state.temp}° F</h4>

@@ -2,38 +2,72 @@ import React, {Component} from 'react'
 
 class SearchArea extends Component {
   state = {
-    params: null
+    params: null,
+    setCity: "",
+    setLat: "",
+    setLong: ""
   }
 
   changeParams = (btn) => {
       if (btn === "city") {
         this.setState({
           params: "city"
-        })
+        });
       } else if (btn === "coord") {
         this.setState({
           params: "coord"
-        })
+        });
       }
+  }
+
+  handleChange = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  }
+
+  searchCity = (event) => {
+    event.preventDefault();
+    console.log(this.state.setCity);
+    this.props.fetchWeatherByCity(this.state.setCity);
+  }
+
+  searchCoords = (event) => {
+    event.preventDefault();
+    console.log(this.state.setLat);
+    console.log(this.state.setLong);
+    this.props.fetchWeatherByCoords(this.state.setLat, this.state.setLong);
   }
 
   render() {
     return (
       <div className="search-area">
-        Search for your city:
-        <br />
         <button className="city-btn" onClick={event => this.changeParams("city")}>City</button> <button className="coord-btn" onClick={event => this.changeParams("coord")}>Coordinates</button>
         <div className="search-box">
         <br />
           {
             this.state.params ? (
               this.state.params === "city" ?
-              <input type="text" placeholder="City..."></input> :
-              <>
-                Latitude: <input type="text" placeholder="0"></input>
+              <form onSubmit={event => this.searchCity(event)}>
+                City Name:
                 <br />
-                Longitude: <input type="text" placeholder="0"></input>
-              </>
+                <input type="text" name="setCity" placeholder="City..." value={this.state.setCity} onChange={this.handleChange}></input>
+                <br />
+                <input type="submit" value="Search"/>
+              </form>
+                :
+              <form onSubmit={event => this.searchCoords(event)}>
+                Latitude:
+                <br />
+                <input type="text" name="setLat" placeholder="0" value={this.state.setLat} onChange={this.handleChange}></input>
+                <br />
+                Longitude:
+                <br />
+                <input type="text" name="setLong" placeholder="0" value={this.state.setLong} onChange={this.handleChange}></input>
+                <br />
+                <br />
+                <input type="submit" value="Search"/>
+              </form>
             ) :
             null
           }
