@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
+import SearchArea from './components/SearchArea';
 import './App.css';
 
 class App extends React.Component {
@@ -19,7 +19,22 @@ class App extends React.Component {
     this.setState({
       lat: position.coords.latitude,
       long: position.coords.longitude
-    }, () => console.log(this.state.lat))
+    }, () => {
+      console.log(this.state.lat)
+      console.log(this.state.long)
+      fetch(`http://api.openweathermap.org/data/2.5/weather?units=imperial&lat=${this.state.lat}&lon=${this.state.long}&APPID=4798d2ba65a57a46587bfbd4af561989`)
+      .then(response => response.json())
+      .then(weatherData => {
+        console.log(weatherData.name)
+        this.setState({
+          city: weatherData.name,
+          temp: weatherData.main.temp,
+          pressure: weatherData.main.pressure,
+          humidity: weatherData.main.humidity,
+          desc: weatherData.weather[0].main
+        })
+      })
+    })
   }
 
   getCurrentLocation = () => {
@@ -34,24 +49,22 @@ class App extends React.Component {
     this.getCurrentLocation();
   }
 
-
   render() {
     return (
       <div className="App">
-      <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>
-      Edit <code>src/App.js</code> and save to reload.
-      </p>
-      <a
-      className="App-link"
-      href="https://reactjs.org"
-      target="_blank"
-      rel="noopener noreferrer"
-      >
-      Learn React
-      </a>
-      </header>
+        <header className="App-header">
+          <h1>MyWeather</h1>
+        </header>
+        <br />
+        <SearchArea />
+        <div>
+          <h3>{this.state.city}</h3>
+          <h4>{this.state.temp}° F</h4>
+          <p>{this.state.desc}</p>
+          <br />
+          <p>Humidity: {this.state.humidity}%</p>
+          <p>Pressure: {this.state.pressure} hPa</p>
+        </div>
       </div>
     );
   }
