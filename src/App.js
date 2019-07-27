@@ -15,20 +15,19 @@ class App extends React.Component {
     long: null
   }
 
-  geoSuccess = (position) => {
+  showPosition = (position) => {
     this.setState({
       lat: position.coords.latitude,
       long: position.coords.longitude
     }, () => {
-      console.log(this.state.lat)
-      console.log(this.state.long)
       fetch(`http://api.openweathermap.org/data/2.5/weather?units=imperial&lat=${this.state.lat}&lon=${this.state.long}&APPID=4798d2ba65a57a46587bfbd4af561989`)
       .then(response => response.json())
       .then(weatherData => {
-        console.log(weatherData.name)
         this.setState({
           city: weatherData.name,
           temp: weatherData.main.temp,
+          minTemp: weatherData.main.temp_min,
+          maxTemp: weatherData.main.temp_max,
           pressure: weatherData.main.pressure,
           humidity: weatherData.main.humidity,
           desc: weatherData.weather[0].main
@@ -39,7 +38,7 @@ class App extends React.Component {
 
   getCurrentLocation = () => {
     if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.geoSuccess);
+      navigator.geolocation.getCurrentPosition(this.showPosition);
     } else {
       alert("Geolocation is not supported by this browser.");
     }
@@ -49,12 +48,13 @@ class App extends React.Component {
     fetch(`http://api.openweathermap.org/data/2.5/weather?units=imperial&q=${city}&APPID=4798d2ba65a57a46587bfbd4af561989`)
     .then(response => response.json())
     .then(weatherData => {
-      console.log(weatherData.name)
       this.setState({
         lat: weatherData.coord.lat,
         long: weatherData.coord.lon,
         city: weatherData.name,
         temp: weatherData.main.temp,
+        minTemp: weatherData.main.temp_min,
+        maxTemp: weatherData.main.temp_max,
         pressure: weatherData.main.pressure,
         humidity: weatherData.main.humidity,
         desc: weatherData.weather[0].main
@@ -66,12 +66,13 @@ class App extends React.Component {
     fetch(`http://api.openweathermap.org/data/2.5/weather?units=imperial&lat=${parseFloat(lat)}&lon=${parseFloat(long)}&APPID=4798d2ba65a57a46587bfbd4af561989`)
     .then(response => response.json())
     .then(weatherData => {
-      console.log(weatherData.name)
       this.setState({
         lat: weatherData.coord.lat,
         long: weatherData.coord.lon,
         city: weatherData.name,
         temp: weatherData.main.temp,
+        minTemp: weatherData.main.temp_min,
+        maxTemp: weatherData.main.temp_max,
         pressure: weatherData.main.pressure,
         humidity: weatherData.main.humidity,
         desc: weatherData.weather[0].main
@@ -95,12 +96,13 @@ class App extends React.Component {
         <br />
         <SearchArea fetchWeatherByCity={this.fetchWeatherByCity} fetchWeatherByCoords={this.fetchWeatherByCoords}/>
         <div>
-          <h3>{this.state.city}</h3>
+          <h2>{this.state.city}</h2>
+          <h4>{this.state.desc}</h4>
           <h4>{this.state.temp}° F</h4>
-          <p>{this.state.desc}</p>
-          <br />
           <p>Humidity: {this.state.humidity}%</p>
           <p>Pressure: {this.state.pressure} hPa</p>
+          <br />
+          <br />
         </div>
       </div>
     );

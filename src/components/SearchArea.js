@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 
 class SearchArea extends Component {
   state = {
@@ -28,14 +28,11 @@ class SearchArea extends Component {
 
   searchCity = (event) => {
     event.preventDefault();
-    console.log(this.state.setCity);
     this.props.fetchWeatherByCity(this.state.setCity);
   }
 
   searchCoords = (event) => {
     event.preventDefault();
-    console.log(this.state.setLat);
-    console.log(this.state.setLong);
     this.props.fetchWeatherByCoords(this.state.setLat, this.state.setLong);
   }
 
